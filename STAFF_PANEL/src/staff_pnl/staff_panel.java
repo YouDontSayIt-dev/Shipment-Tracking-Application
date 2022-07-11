@@ -25,10 +25,14 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JOptionPane;
 
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import net.proteanit.sql.DbUtils;
 
 
 
@@ -84,6 +88,29 @@ public ArrayList<Container> containerList(){
        }
      
     return containerList;
+}
+
+public ArrayList<Shipment> shipmentList(){
+    ArrayList<Shipment> shipmentList = new ArrayList<>();
+     try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String query1 = "SELECT * FROM shipment_details";
+           Statement st = con.createStatement();
+           ResultSet rs = st.executeQuery(query1);
+           Shipment shipment;
+           while(rs.next()){
+               shipment=new Shipment(rs.getInt("Shipment_ID"),rs.getString("trade_update_date"),rs.getString("run_date"),rs.getString("estimated_arrival_date"),rs.getString("foreign_port_lading"),
+               rs.getString("place_of_receipt"),rs.getString("port_of_destination"),rs.getString("actual_arrival_date"),rs.getInt("consignee_ID"),rs.getInt("shipper_ID"));
+               shipmentList.add(shipment);
+           }
+           
+     }catch(Exception e){
+           System.out.println(e.getMessage());
+           
+       }
+     
+    return shipmentList;
 }
 
 public ArrayList<Shipper> shipperList(){
@@ -189,6 +216,25 @@ public void show_cargo(){
     }
 }
 
+public void show_shipment(){
+    ArrayList<Shipment> list = shipmentList();
+    DefaultTableModel shipment_model = (DefaultTableModel)shipmentTable.getModel();
+    Object[] row = new Object[11];
+    for(int i=0;i<list.size();i++){
+        row[0]=list.get(i).getshipment_id();
+        row[1]=list.get(i).gettrade_update_date();
+        row[2]=list.get(i).getrun_date();
+        row[3]=list.get(i).getestimated_arrival_date();
+        row[4]=list.get(i).getforeignportLading();
+        row[5]=list.get(i).getplaceofReceipt();
+        row[6]=list.get(i).getportofDestination();
+        row[7]=list.get(i).getactualarrivalDate();
+        row[8]=list.get(i).getconsigneeID();
+        row[9]=list.get(i).getshipperID();
+        shipment_model.addRow(row);
+    }
+}
+
 public void show_container(){
     ArrayList<Container> list = containerList();
     DefaultTableModel containerModel = (DefaultTableModel)containerDisplay.getModel();
@@ -200,19 +246,6 @@ public void show_container(){
     }
 }
 
-public void show_shipment(){
-    ArrayList<Cargo> list = cargoList();
-    DefaultTableModel cargo_model = (DefaultTableModel)shipmentTable.getModel();
-    Object[] row = new Object[5];
-    for(int i=0;i<list.size();i++){
-        row[0]=list.get(i).getsno();
-        row[1]=list.get(i).getdt();
-        row[2]=list.get(i).getpc();
-        row[3]=list.get(i).getsid();
-        row[4]=list.get(i).getcn();
-        cargo_model.addRow(row);
-    }
-}
 
 public void show_shipper(){
     ArrayList<Shipper> list = shipperList();
@@ -332,10 +365,6 @@ public void show_consignee_comm(){
         jPanel4 = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
-        jLabel6 = new javax.swing.JLabel();
-        cbx_cargos_in = new javax.swing.JComboBox<>();
-        jLabel8 = new javax.swing.JLabel();
-        cbx_cargos_sort = new javax.swing.JComboBox<>();
         jPanel5 = new javax.swing.JPanel();
         jPanel6 = new javax.swing.JPanel();
         jButton3 = new javax.swing.JButton();
@@ -364,10 +393,6 @@ public void show_consignee_comm(){
         jPanel9 = new javax.swing.JPanel();
         jLabel16 = new javax.swing.JLabel();
         jTextField6 = new javax.swing.JTextField();
-        jLabel17 = new javax.swing.JLabel();
-        cbx_cargos_in1 = new javax.swing.JComboBox<>();
-        jLabel18 = new javax.swing.JLabel();
-        cbx_cargos_sort1 = new javax.swing.JComboBox<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         shipmentTable = new javax.swing.JTable();
         jPanel10 = new javax.swing.JPanel();
@@ -378,10 +403,10 @@ public void show_consignee_comm(){
         jLabel29 = new javax.swing.JLabel();
         jLabel30 = new javax.swing.JLabel();
         jLabel28 = new javax.swing.JLabel();
-        jDateChooser1 = new com.toedter.calendar.JDateChooser();
-        jDateChooser2 = new com.toedter.calendar.JDateChooser();
-        jDateChooser3 = new com.toedter.calendar.JDateChooser();
-        jDateChooser4 = new com.toedter.calendar.JDateChooser();
+        R_Date = new com.toedter.calendar.JDateChooser();
+        TU_Date = new com.toedter.calendar.JDateChooser();
+        EA_Date = new com.toedter.calendar.JDateChooser();
+        AA_Date = new com.toedter.calendar.JDateChooser();
         jPanel15 = new javax.swing.JPanel();
         jLabel26 = new javax.swing.JLabel();
         jTextField11 = new javax.swing.JTextField();
@@ -406,10 +431,6 @@ public void show_consignee_comm(){
         jPanel18 = new javax.swing.JPanel();
         jLabel22 = new javax.swing.JLabel();
         jTextField7 = new javax.swing.JTextField();
-        jLabel23 = new javax.swing.JLabel();
-        cbx_cargos_in2 = new javax.swing.JComboBox<>();
-        jLabel33 = new javax.swing.JLabel();
-        cbx_cargos_sort2 = new javax.swing.JComboBox<>();
         jPanel21 = new javax.swing.JPanel();
         jLabel36 = new javax.swing.JLabel();
         jPanel22 = new javax.swing.JPanel();
@@ -449,10 +470,6 @@ public void show_consignee_comm(){
         jPanel19 = new javax.swing.JPanel();
         jLabel34 = new javax.swing.JLabel();
         jTextField8 = new javax.swing.JTextField();
-        jLabel38 = new javax.swing.JLabel();
-        cbx_cargos_in4 = new javax.swing.JComboBox<>();
-        jLabel39 = new javax.swing.JLabel();
-        cbx_cargos_sort3 = new javax.swing.JComboBox<>();
         jPanel27 = new javax.swing.JPanel();
         jLabel42 = new javax.swing.JLabel();
         jPanel28 = new javax.swing.JPanel();
@@ -490,10 +507,6 @@ public void show_consignee_comm(){
         jPanel20 = new javax.swing.JPanel();
         jLabel55 = new javax.swing.JLabel();
         jTextField22 = new javax.swing.JTextField();
-        jLabel56 = new javax.swing.JLabel();
-        cbx_cargos_in8 = new javax.swing.JComboBox<>();
-        jLabel57 = new javax.swing.JLabel();
-        cbx_cargos_sort4 = new javax.swing.JComboBox<>();
         jPanel41 = new javax.swing.JPanel();
         jScrollPane12 = new javax.swing.JScrollPane();
         containerDisplay = new javax.swing.JTable();
@@ -863,6 +876,11 @@ public void show_consignee_comm(){
             }
         });
         cargoDisplay.setSelectionBackground(new java.awt.Color(22, 105, 122));
+        cargoDisplay.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                cargoDisplayMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(cargoDisplay);
 
         jPanel4.setBackground(new java.awt.Color(116, 181, 194));
@@ -880,24 +898,11 @@ public void show_consignee_comm(){
                 jTextField1ActionPerformed(evt);
             }
         });
-
-        jLabel6.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel6.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel6.setText("Search in:");
-
-        cbx_cargos_in.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_in.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_in.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All columns", "Serial", "Description Text", "Piece Count", "Shipment ID", "Container Number" }));
-
-        jLabel8.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel8.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel8.setText("Sort by:");
-
-        cbx_cargos_sort.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_sort.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_sort.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Ascending", "Descending" }));
+        jTextField1.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField1KeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
@@ -908,28 +913,16 @@ public void show_consignee_comm(){
                 .addComponent(jLabel7)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 446, Short.MAX_VALUE)
-                .addComponent(jLabel6)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_in, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(28, 28, 28)
-                .addComponent(jLabel8)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_sort, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addGap(36, 36, 36)
+                .addGap(38, 38, 38)
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel6)
-                    .addComponent(cbx_cargos_in, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel8)
-                    .addComponent(cbx_cargos_sort, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jPanel5.setBackground(new java.awt.Color(255, 255, 255));
@@ -940,11 +933,16 @@ public void show_consignee_comm(){
         jButton3.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         jButton3.setForeground(new java.awt.Color(255, 255, 255));
         jButton3.setText("DELETE");
+        jButton3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton3ActionPerformed(evt);
+            }
+        });
 
         jButton1.setBackground(new java.awt.Color(0, 0, 51));
         jButton1.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("SAVE");
+        jButton1.setText("UPDATE");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -964,7 +962,7 @@ public void show_consignee_comm(){
         jButton7.setBackground(new java.awt.Color(0, 102, 102));
         jButton7.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         jButton7.setForeground(new java.awt.Color(255, 255, 255));
-        jButton7.setText("NEW");
+        jButton7.setText("INSERT");
         jButton7.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton7ActionPerformed(evt);
@@ -1070,7 +1068,7 @@ public void show_consignee_comm(){
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 466, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
                     .addComponent(jLabel10))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(465, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1249,24 +1247,11 @@ public void show_consignee_comm(){
                 jTextField6ActionPerformed(evt);
             }
         });
-
-        jLabel17.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel17.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel17.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel17.setText("Search in:");
-
-        cbx_cargos_in1.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_in1.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_in1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All columns", "Serial", "Description Text", "Piece Count", "Shipment ID", "Container Number" }));
-
-        jLabel18.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel18.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel18.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel18.setText("Sort by:");
-
-        cbx_cargos_sort1.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_sort1.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_sort1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Ascending", "Descending" }));
+        jTextField6.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField6KeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel9Layout = new javax.swing.GroupLayout(jPanel9);
         jPanel9.setLayout(jPanel9Layout);
@@ -1277,15 +1262,7 @@ public void show_consignee_comm(){
                 .addComponent(jLabel16)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(jLabel17)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_in1, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel18)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_sort1, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(495, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel9Layout.setVerticalGroup(
             jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -1293,12 +1270,8 @@ public void show_consignee_comm(){
                 .addContainerGap()
                 .addGroup(jPanel9Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel17)
-                    .addComponent(cbx_cargos_in1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel18)
-                    .addComponent(cbx_cargos_sort1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel16))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         shipmentTable.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
@@ -1307,11 +1280,11 @@ public void show_consignee_comm(){
 
             },
             new String [] {
-                "SERIAL", "Description Text", "Piece Count", "Shipment ID", "Container Number"
+                "Shipment ID", "Trade Update Date", "Run Date", "Estimated Arrival Date", "Foreign Port Lading", "Place of Receipt", "Port of Destination", "Actual Arrival Date", "Consignee ID", "Shipper ID"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false
+                false, false, false, false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -1319,6 +1292,11 @@ public void show_consignee_comm(){
             }
         });
         shipmentTable.setSelectionBackground(new java.awt.Color(22, 105, 122));
+        shipmentTable.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                shipmentTableMouseClicked(evt);
+            }
+        });
         jScrollPane3.setViewportView(shipmentTable);
 
         jPanel10.setBackground(new java.awt.Color(22, 105, 122));
@@ -1374,18 +1352,18 @@ public void show_consignee_comm(){
                     .addGroup(jPanel12Layout.createSequentialGroup()
                         .addComponent(jLabel31)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(TU_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel29)
                         .addGap(18, 18, 18)
-                        .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(R_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 126, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel30)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel12Layout.createSequentialGroup()
-                        .addComponent(jDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(EA_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel28)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jDateChooser4, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(AA_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(15, 15, 15)))
                 .addContainerGap(485, Short.MAX_VALUE))
         );
@@ -1397,8 +1375,8 @@ public void show_consignee_comm(){
                     .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel31)
                         .addComponent(jLabel29))
-                    .addComponent(jDateChooser1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDateChooser2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(R_Date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(TU_Date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel12Layout.createSequentialGroup()
                         .addGap(63, 63, 63)
@@ -1406,13 +1384,13 @@ public void show_consignee_comm(){
                     .addGroup(jPanel12Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                         .addGroup(jPanel12Layout.createSequentialGroup()
                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(jDateChooser4, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(AA_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel12Layout.createSequentialGroup()
                             .addGap(60, 60, 60)
                             .addComponent(jLabel28)))
                     .addGroup(jPanel12Layout.createSequentialGroup()
                         .addGap(60, 60, 60)
-                        .addComponent(jDateChooser3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(EA_Date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -1536,11 +1514,16 @@ public void show_consignee_comm(){
         jButton5.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         jButton5.setForeground(new java.awt.Color(255, 255, 255));
         jButton5.setText("DELETE");
+        jButton5.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton5ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(0, 0, 51));
         jButton2.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("SAVE");
+        jButton2.setText("UPDATE");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -1647,7 +1630,7 @@ public void show_consignee_comm(){
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, pnlCard_shipmentsLayout.createSequentialGroup()
                 .addComponent(jPanel9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 507, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 509, Short.MAX_VALUE)
                 .addGap(11, 11, 11)
                 .addComponent(jPanel10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
@@ -1680,24 +1663,11 @@ public void show_consignee_comm(){
                 jTextField7ActionPerformed(evt);
             }
         });
-
-        jLabel23.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel23.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel23.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel23.setText("Search in:");
-
-        cbx_cargos_in2.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_in2.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_in2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All columns", "ID", "Name", "Address" }));
-
-        jLabel33.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel33.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel33.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel33.setText("Sort by:");
-
-        cbx_cargos_sort2.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_sort2.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_sort2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Ascending", "Descending" }));
+        jTextField7.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField7KeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel18Layout = new javax.swing.GroupLayout(jPanel18);
         jPanel18.setLayout(jPanel18Layout);
@@ -1708,14 +1678,6 @@ public void show_consignee_comm(){
                 .addComponent(jLabel22)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(jLabel23)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_in2, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel33)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_sort2, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel18Layout.setVerticalGroup(
@@ -1724,12 +1686,8 @@ public void show_consignee_comm(){
                 .addContainerGap()
                 .addGroup(jPanel18Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel23)
-                    .addComponent(cbx_cargos_in2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel33)
-                    .addComponent(cbx_cargos_sort2, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel22))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jPanel21.setBackground(new java.awt.Color(22, 105, 122));
@@ -1930,7 +1888,7 @@ public void show_consignee_comm(){
         jPanel23Layout.setHorizontalGroup(
             jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel23Layout.createSequentialGroup()
-                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 989, Short.MAX_VALUE)
+                .addComponent(jScrollPane4, javax.swing.GroupLayout.DEFAULT_SIZE, 1326, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel23Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -1953,7 +1911,7 @@ public void show_consignee_comm(){
                 .addComponent(jPanel31, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jPanel32, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 48, Short.MAX_VALUE))
+                .addGap(0, 123, Short.MAX_VALUE))
         );
 
         jPanel26.setBackground(new java.awt.Color(255, 255, 255));
@@ -2192,24 +2150,11 @@ public void show_consignee_comm(){
                 jTextField8ActionPerformed(evt);
             }
         });
-
-        jLabel38.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel38.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel38.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel38.setText("Search in:");
-
-        cbx_cargos_in4.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_in4.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_in4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All columns", "ID", "Name", "Address" }));
-
-        jLabel39.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel39.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
-        jLabel39.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel39.setText("Sort by:");
-
-        cbx_cargos_sort3.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_sort3.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
-        cbx_cargos_sort3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Ascending", "Descending" }));
+        jTextField8.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField8KeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel19Layout = new javax.swing.GroupLayout(jPanel19);
         jPanel19.setLayout(jPanel19Layout);
@@ -2220,15 +2165,7 @@ public void show_consignee_comm(){
                 .addComponent(jLabel34)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(jLabel38)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_in4, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel39)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_sort3, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(495, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel19Layout.setVerticalGroup(
             jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -2236,12 +2173,8 @@ public void show_consignee_comm(){
                 .addContainerGap()
                 .addGroup(jPanel19Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel38)
-                    .addComponent(cbx_cargos_in4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel39)
-                    .addComponent(cbx_cargos_sort3, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel34))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jPanel27.setBackground(new java.awt.Color(22, 105, 122));
@@ -2667,24 +2600,11 @@ public void show_consignee_comm(){
                 jTextField22ActionPerformed(evt);
             }
         });
-
-        jLabel56.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel56.setFont(new java.awt.Font("SansSerif", 1, 15)); // NOI18N
-        jLabel56.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel56.setText("Search in:");
-
-        cbx_cargos_in8.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_in8.setFont(new java.awt.Font("SansSerif", 0, 15)); // NOI18N
-        cbx_cargos_in8.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "All columns", "Container Number", "Vessel Name" }));
-
-        jLabel57.setBackground(new java.awt.Color(0, 51, 51));
-        jLabel57.setFont(new java.awt.Font("SansSerif", 1, 15)); // NOI18N
-        jLabel57.setForeground(new java.awt.Color(0, 51, 51));
-        jLabel57.setText("Sort by:");
-
-        cbx_cargos_sort4.setBackground(new java.awt.Color(72, 159, 181));
-        cbx_cargos_sort4.setFont(new java.awt.Font("SansSerif", 0, 15)); // NOI18N
-        cbx_cargos_sort4.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Default", "Ascending", "Descending" }));
+        jTextField22.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTextField22KeyReleased(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel20Layout = new javax.swing.GroupLayout(jPanel20);
         jPanel20.setLayout(jPanel20Layout);
@@ -2695,14 +2615,6 @@ public void show_consignee_comm(){
                 .addComponent(jLabel55)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jTextField22, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(34, 34, 34)
-                .addComponent(jLabel56)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_in8, javax.swing.GroupLayout.PREFERRED_SIZE, 166, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel57)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(cbx_cargos_sort4, javax.swing.GroupLayout.PREFERRED_SIZE, 139, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel20Layout.setVerticalGroup(
@@ -2711,12 +2623,8 @@ public void show_consignee_comm(){
                 .addContainerGap()
                 .addGroup(jPanel20Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTextField22, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel56)
-                    .addComponent(cbx_cargos_in8, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel57)
-                    .addComponent(cbx_cargos_sort4, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel55))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
 
         jPanel41.setBackground(new java.awt.Color(255, 255, 255));
@@ -2727,7 +2635,7 @@ public void show_consignee_comm(){
 
             },
             new String [] {
-                "CONTAINER NUMBER", "VESSEL NAME"
+                "container_ID", "Vessel_Name"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -2739,6 +2647,11 @@ public void show_consignee_comm(){
             }
         });
         containerDisplay.setSelectionBackground(new java.awt.Color(22, 105, 122));
+        containerDisplay.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                containerDisplayMouseClicked(evt);
+            }
+        });
         jScrollPane12.setViewportView(containerDisplay);
 
         javax.swing.GroupLayout jPanel41Layout = new javax.swing.GroupLayout(jPanel41);
@@ -2769,7 +2682,7 @@ public void show_consignee_comm(){
 
         jLabel62.setFont(new java.awt.Font("SansSerif", 1, 15)); // NOI18N
         jLabel62.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel62.setText("VESSEL NO:");
+        jLabel62.setText("VESSEL NAME:");
 
         jTextField24.setFont(new java.awt.Font("Arial", 0, 15)); // NOI18N
         jTextField24.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.LOWERED));
@@ -2834,11 +2747,21 @@ public void show_consignee_comm(){
         jButton29.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         jButton29.setForeground(new java.awt.Color(255, 255, 255));
         jButton29.setText("DELETE");
+        jButton29.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton29ActionPerformed(evt);
+            }
+        });
 
         jButton30.setBackground(new java.awt.Color(0, 0, 51));
         jButton30.setFont(new java.awt.Font("Arial", 1, 15)); // NOI18N
         jButton30.setForeground(new java.awt.Color(255, 255, 255));
         jButton30.setText("SAVE");
+        jButton30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton30ActionPerformed(evt);
+            }
+        });
 
         jButton31.setBackground(new java.awt.Color(0, 102, 102));
         jButton31.setFont(new java.awt.Font("SansSerif", 1, 15)); // NOI18N
@@ -2918,7 +2841,7 @@ public void show_consignee_comm(){
                 .addComponent(jPanel42, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(1, 1, 1)
                 .addComponent(jPanel47, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(133, Short.MAX_VALUE))
+                .addContainerGap(135, Short.MAX_VALUE))
         );
 
         pnl_main.add(pnlCard_containers, "pnlCard_containers");
@@ -3076,19 +2999,75 @@ public void show_consignee_comm(){
     }//GEN-LAST:event_jTextField6ActionPerformed
 
     private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
-
+            try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String query = "insert into shipment_details(shipment_ID,trade_update_date,run_date,estimated_arrival_date,foreign_port_lading,place_of_receipt,port_of_destination,actual_arrival_date,consignee_ID,shipper_ID)values(?,?,?,?,?,?,?,?,?,?)";
+           PreparedStatement pst = con.prepareStatement(query);
+           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+           String trade_update_date = sdf.format(TU_Date.getDate());
+           String run_date = sdf.format(R_Date.getDate());
+           String estimated_arrival_date = sdf.format(EA_Date.getDate());
+           String actual_arrival_date = sdf.format(AA_Date.getDate());
+           pst.setString(1,jTextField14.getText());
+           pst.setString(2,trade_update_date);
+           pst.setString(3,run_date);
+           pst.setString(4,estimated_arrival_date);
+           pst.setString(5,jTextField11.getText());
+           pst.setString(6,jTextField12.getText());
+           pst.setString(7,jTextField13.getText());
+           pst.setString(8,actual_arrival_date);
+           pst.setString(9,jTextField10.getText());
+           pst.setString(10,jTextField9.getText());
+          
+           
+           
+           pst.executeUpdate();
+           
+           DefaultTableModel  model = (DefaultTableModel)shipmentTable.getModel();
+           model.setRowCount(0);
+           show_shipment();
+           JOptionPane.showMessageDialog(null,"Inserted Succesfully!");
+           
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Inserted Failed!");
+           
+       }
     }//GEN-LAST:event_jButton6ActionPerformed
 
-    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField7ActionPerformed
-
     private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
+        try{
+            SerialNo.setText("");
+        DescriptionText.setText("");
+        PieceCount.setText("");
+        shipmentID.setText("");
+        ContainerNumber.setText("");
+        JOptionPane.showMessageDialog(null,"Cleared Succesfully!");
+        }
+        catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Clear Failed!");
+           
+       }
     }//GEN-LAST:event_jButton10ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
-        // TODO add your handling code here:
+        try{
+            
+        jTextField14.setText("");
+        jTextField11.setText("");
+        jTextField12.setText("");
+        jTextField13.setText("");
+        jTextField9.setText("");
+        jTextField10.setText("");
+        JOptionPane.showMessageDialog(null,"Cleared Succesfully!");
+        }
+        catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Clear Failed!");
+           
+       }
     }//GEN-LAST:event_jButton11ActionPerformed
 
     private void jButton16ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton16ActionPerformed
@@ -3132,20 +3111,42 @@ public void show_consignee_comm(){
     }//GEN-LAST:event_jTextField22ActionPerformed
 
     private void jButton31ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton31ActionPerformed
-        // TODO add your handling code here:
+        try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String query = "insert into container_number(container_ID,Vessel_Name)values(?,?)";
+           PreparedStatement pst = con.prepareStatement(query);
+           pst.setString(1,jTextField23.getText());
+           pst.setString(2,jTextField24.getText());
+           
+          
+           pst.executeUpdate();
+           show_container();
+           JOptionPane.showMessageDialog(null,"Inserted Succesfully!");
+           
+           
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Inserted Failed!");
+           
+       }
     }//GEN-LAST:event_jButton31ActionPerformed
 
     private void jButton32ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton32ActionPerformed
-        // TODO add your handling code here:
+       try{
+        jTextField23.setText("");
+        jTextField24.setText("");
+        JOptionPane.showMessageDialog(null,"Cleared Succesfully!");
+        }
+        catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Clear Failed!");
+           
+       }
     }//GEN-LAST:event_jButton32ActionPerformed
 
     private void jButton7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton7ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton7ActionPerformed
-
-    
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        try{
+       try{
            Class.forName("com.mysql.cj.jdbc.Driver");
            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
            String query = "insert into cargo(serial_number,description_text,piece_count,shipment_ID,container_number)values(?,?,?,?,?)";
@@ -3157,11 +3158,44 @@ public void show_consignee_comm(){
            pst.setString(5,ContainerNumber.getText());
           
            pst.executeUpdate();
+           DefaultTableModel model = (DefaultTableModel)cargoDisplay.getModel();
+           model.setRowCount(0);
+           show_cargo();
            JOptionPane.showMessageDialog(null,"Inserted Succesfully!");
+           
            
         }catch(Exception e){
            System.out.println(e.getMessage());
            JOptionPane.showMessageDialog(null,"Inserted Failed!");
+           
+       }
+    }//GEN-LAST:event_jButton7ActionPerformed
+
+    
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           int row = cargoDisplay.getSelectedRow();
+           String value = (cargoDisplay.getModel().getValueAt(row,0).toString());
+           String query = "UPDATE shipmenttracking.cargo SET description_text=?,piece_count=?,shipment_ID=?,container_number=? WHERE serial_number="+value;
+           PreparedStatement pst = con.prepareStatement(query);
+           pst.setString(1,DescriptionText.getText());
+           pst.setString(2,PieceCount.getText());
+           pst.setString(3,shipmentID.getText());
+           pst.setString(4,ContainerNumber.getText());
+          
+           pst.executeUpdate();
+           
+           DefaultTableModel  model = (DefaultTableModel)cargoDisplay.getModel();
+           model.setRowCount(0);
+           show_cargo();
+           JOptionPane.showMessageDialog(null,"Updated Succesfully!");
+           
+           
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Update Failed!");
            
        }
     }//GEN-LAST:event_jButton1ActionPerformed
@@ -3171,46 +3205,45 @@ public void show_consignee_comm(){
     }//GEN-LAST:event_SerialNoActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        try{
+       try{
            Class.forName("com.mysql.cj.jdbc.Driver");
            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
-           String query = "insert into cargo(serial_number,description_text,piece_count,shipment_ID,container_number)values(?,?,?,?,?)";
+           int row = shipmentTable.getSelectedRow();
+           String value = (shipmentTable.getModel().getValueAt(row,0).toString());
+           String query = "UPDATE shipment_details SET trade_update_date=?,run_date=?,estimated_arrival_date=?,foreign_port_lading=?,place_of_receipt=?,port_of_destination=?,actual_arrival_date=?,consignee_ID=?,shipper_ID=? WHERE shipment_ID="+value;
            PreparedStatement pst = con.prepareStatement(query);
-           pst.setString(1,SerialNo.getText());
-           pst.setString(2,DescriptionText.getText());
-           pst.setString(3,PieceCount.getText());
-           pst.setString(4,shipmentID.getText());
-           pst.setString(5,ContainerNumber.getText());
+           SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+           String trade_update_date = sdf.format(TU_Date.getDate());
+           String run_date = sdf.format(R_Date.getDate());
+           String estimated_arrival_date = sdf.format(EA_Date.getDate());
+           String actual_arrival_date = sdf.format(AA_Date.getDate());
+           pst.setString(1,trade_update_date);
+           pst.setString(2,run_date);
+           pst.setString(3,estimated_arrival_date);
+           pst.setString(4,jTextField11.getText());
+           pst.setString(5,jTextField12.getText());
+           pst.setString(6,jTextField13.getText());
+           pst.setString(7,actual_arrival_date);
+           pst.setString(8,jTextField10.getText());
+           pst.setString(9,jTextField9.getText());
           
            pst.executeUpdate();
-           JOptionPane.showMessageDialog(null,"Inserted Succesfully!");
+           
+           DefaultTableModel  model = (DefaultTableModel)shipmentTable.getModel();
+           model.setRowCount(0);
+           show_shipment();
+           JOptionPane.showMessageDialog(null,"Updated Succesfully!");
+           
            
         }catch(Exception e){
            System.out.println(e.getMessage());
-           JOptionPane.showMessageDialog(null,"Inserted Failed!");
+           JOptionPane.showMessageDialog(null,"Update Failed!");
            
        }
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton17ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton17ActionPerformed
-        try{
-           Class.forName("com.mysql.cj.jdbc.Driver");
-           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
-           String query = "insert into shipper_table(shipper_ID,shipper_name,shipper_address)values(?,?,?)";
-           PreparedStatement pst = con.prepareStatement(query);
-           pst.setString(1,ShipperID.getText());
-           pst.setString(2,ShipperName.getText());
-           pst.setString(3,ShipperAddress.getText());
-           
-          
-           pst.executeUpdate();
-           JOptionPane.showMessageDialog(null,"Inserted Succesfully!");
-           
-        }catch(Exception e){
-           System.out.println(e.getMessage());
-           JOptionPane.showMessageDialog(null,"Inserted Failed!");
-           
-       }
+        
     }//GEN-LAST:event_jButton17ActionPerformed
 
     private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
@@ -3242,6 +3275,235 @@ public void show_consignee_comm(){
     private void Shipper_Comm_IDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Shipper_Comm_IDActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_Shipper_Comm_IDActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+            int row = cargoDisplay.getSelectedRow();
+           String value = (cargoDisplay.getModel().getValueAt(row,0).toString());
+            String query = "DELETE FROM cargo where serial_number="+value;
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.executeUpdate();
+            
+            DefaultTableModel  model = (DefaultTableModel)cargoDisplay.getModel();
+            model.setRowCount(0);
+            show_cargo();
+            JOptionPane.showMessageDialog(null,"Deleted Succesfully!");
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Deletion Failed!");
+           
+       }   
+    }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+            int row = shipmentTable.getSelectedRow();
+           String value = (shipmentTable.getModel().getValueAt(row,0).toString());
+            String query = "DELETE FROM shipment_details where shipment_ID="+value;
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.executeUpdate();
+            
+            DefaultTableModel  model = (DefaultTableModel)shipmentTable.getModel();
+            model.setRowCount(0);
+            show_shipment();
+            JOptionPane.showMessageDialog(null,"Deleted Succesfully!");
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Deletion Failed!");
+           
+       }   
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void jButton29ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton29ActionPerformed
+        try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+            int row = containerDisplay.getSelectedRow();
+           String value = (containerDisplay.getModel().getValueAt(row,0).toString());
+            String query = "DELETE FROM container_number where Container_ID="+value;
+            PreparedStatement pst = con.prepareStatement(query);
+            pst.executeUpdate();
+            show_cargo();
+            DefaultTableModel  model = (DefaultTableModel)containerDisplay.getModel();
+            model.setRowCount(0);
+            
+            JOptionPane.showMessageDialog(null,"Deleted Succesfully!");
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Deletion Failed!");
+           
+       }   
+    }//GEN-LAST:event_jButton29ActionPerformed
+
+    private void jButton30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton30ActionPerformed
+        try{
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           int row = containerDisplay.getSelectedRow();
+           String value = (containerDisplay.getModel().getValueAt(row,0).toString());
+           String query = "UPDATE container_number SET container_ID=?, Vessel_Name=? WHERE container_ID="+value;
+           PreparedStatement pst = con.prepareStatement(query);
+           pst.setString(1,jTextField23.getText());
+           pst.setString(2,jTextField24.getText());
+           
+          
+           pst.executeUpdate();
+           DefaultTableModel  model = (DefaultTableModel)containerDisplay.getModel();
+           model.setRowCount(0);
+           show_container();
+           
+           JOptionPane.showMessageDialog(null,"Updated Succesfully!");
+           
+           
+        }catch(Exception e){
+           System.out.println(e.getMessage());
+           JOptionPane.showMessageDialog(null,"Update Failed!");
+           
+       }
+    }//GEN-LAST:event_jButton30ActionPerformed
+
+    private void containerDisplayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_containerDisplayMouseClicked
+        int i = containerDisplay.getSelectedRow();
+        TableModel model = containerDisplay.getModel();
+        jTextField23.setText(model.getValueAt(i,0).toString());
+        jTextField24.setText(model.getValueAt(i,1).toString());
+        
+    }//GEN-LAST:event_containerDisplayMouseClicked
+
+    private void shipmentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_shipmentTableMouseClicked
+       int i = shipmentTable.getSelectedRow();
+   
+        TableModel model = shipmentTable.getModel();
+        jTextField14.setText(model.getValueAt(i,0).toString());
+        jTextField11.setText(model.getValueAt(i,4).toString());
+        jTextField12.setText(model.getValueAt(i,5).toString());
+        jTextField13.setText(model.getValueAt(i,6).toString());
+        jTextField10.setText(model.getValueAt(i,8).toString());
+        jTextField9.setText(model.getValueAt(i,9).toString());
+        
+        
+
+    }//GEN-LAST:event_shipmentTableMouseClicked
+
+    private void cargoDisplayMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_cargoDisplayMouseClicked
+
+        int i = cargoDisplay.getSelectedRow();
+   
+        TableModel model = cargoDisplay.getModel();
+        SerialNo.setText(model.getValueAt(i,0).toString());
+        DescriptionText.setText(model.getValueAt(i,1).toString());
+        PieceCount.setText(model.getValueAt(i,2).toString());
+        shipmentID.setText(model.getValueAt(i,3).toString());
+        ContainerNumber.setText(model.getValueAt(i,4).toString());
+    }//GEN-LAST:event_cargoDisplayMouseClicked
+
+    private void jTextField1KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField1KeyReleased
+        try{
+           String search = jTextField1.getText();
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String sql = "SELECT * FROM cargo where serial_number like '%"+search+"%'";
+           PreparedStatement pst = con.prepareStatement(sql);
+           DefaultTableModel model = (DefaultTableModel)cargoDisplay.getModel();
+           ResultSet rs = pst.executeQuery();
+           cargoDisplay.setModel(DbUtils.resultSetToTableModel(rs));
+           
+           
+           
+           
+     }catch(Exception e){
+           System.out.println(e.getMessage());
+           
+       }
+    }//GEN-LAST:event_jTextField1KeyReleased
+
+    private void jTextField6KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField6KeyReleased
+        try{
+           String search = jTextField6.getText();
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String sql = "SELECT * FROM shipment_details where shipment_ID like '%"+search+"%'";
+           PreparedStatement pst = con.prepareStatement(sql);
+           DefaultTableModel model = (DefaultTableModel)shipmentTable.getModel();
+           ResultSet rs = pst.executeQuery();
+           shipmentTable.setModel(DbUtils.resultSetToTableModel(rs));
+           
+           
+           
+           
+     }catch(Exception e){
+           System.out.println(e.getMessage());
+           
+       }
+    }//GEN-LAST:event_jTextField6KeyReleased
+
+    private void jTextField7ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField7ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextField7ActionPerformed
+
+    private void jTextField7KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField7KeyReleased
+        try{
+           String search = jTextField7.getText();
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String sql = "SELECT * FROM shipper_table where shipper_ID like '%"+search+"%'";
+           PreparedStatement pst = con.prepareStatement(sql);
+           DefaultTableModel model = (DefaultTableModel)shippersDisplay.getModel();
+           ResultSet rs = pst.executeQuery();
+           shippersDisplay.setModel(DbUtils.resultSetToTableModel(rs));
+           
+           
+           
+           
+     }catch(Exception e){
+           System.out.println(e.getMessage());
+           
+       }
+    }//GEN-LAST:event_jTextField7KeyReleased
+
+    private void jTextField8KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField8KeyReleased
+        try{
+           String search = jTextField8.getText();
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String sql = "SELECT * FROM consignee_table where consignee_ID like '%"+search+"%'";
+           PreparedStatement pst = con.prepareStatement(sql);
+           DefaultTableModel model = (DefaultTableModel)consigneeDisplay.getModel();
+           ResultSet rs = pst.executeQuery();
+           consigneeDisplay.setModel(DbUtils.resultSetToTableModel(rs));
+           
+           
+           
+           
+     }catch(Exception e){
+           System.out.println(e.getMessage());
+           
+       }
+    }//GEN-LAST:event_jTextField8KeyReleased
+
+    private void jTextField22KeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTextField22KeyReleased
+        try{
+           String search = jTextField22.getText();
+           Class.forName("com.mysql.cj.jdbc.Driver");
+           Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3310/shipmenttracking?useSSL=false","root","KguiDrake");
+           String sql = "SELECT * FROM container_number where Container_ID like '%"+search+"%'";
+           PreparedStatement pst = con.prepareStatement(sql);
+           DefaultTableModel model = (DefaultTableModel)containerDisplay.getModel();
+           ResultSet rs = pst.executeQuery();
+           containerDisplay.setModel(DbUtils.resultSetToTableModel(rs));
+           
+           
+           
+           
+     }catch(Exception e){
+           System.out.println(e.getMessage());
+           
+       }
+    }//GEN-LAST:event_jTextField22KeyReleased
 
     /**
      * @param args the command line arguments
@@ -3285,27 +3547,21 @@ public void show_consignee_comm(){
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private com.toedter.calendar.JDateChooser AA_Date;
     private javax.swing.JTextField ContainerNumber;
     private javax.swing.JTextPane DescriptionText;
+    private com.toedter.calendar.JDateChooser EA_Date;
     private javax.swing.JTextField PieceCount;
+    private com.toedter.calendar.JDateChooser R_Date;
     private javax.swing.JTextField SerialNo;
     private javax.swing.JTextPane ShipperAddress;
     private javax.swing.JTextField ShipperID;
     private javax.swing.JTextField ShipperName;
     private javax.swing.JTextField Shipper_Comm_ID;
     private javax.swing.JTextField Shipper_Comm_Number;
+    private com.toedter.calendar.JDateChooser TU_Date;
     private javax.swing.JTable cargoDisplay;
-    private javax.swing.JComboBox<String> cbx_cargos_in;
-    private javax.swing.JComboBox<String> cbx_cargos_in1;
-    private javax.swing.JComboBox<String> cbx_cargos_in2;
-    private javax.swing.JComboBox<String> cbx_cargos_in4;
     private javax.swing.JComboBox<String> cbx_cargos_in7;
-    private javax.swing.JComboBox<String> cbx_cargos_in8;
-    private javax.swing.JComboBox<String> cbx_cargos_sort;
-    private javax.swing.JComboBox<String> cbx_cargos_sort1;
-    private javax.swing.JComboBox<String> cbx_cargos_sort2;
-    private javax.swing.JComboBox<String> cbx_cargos_sort3;
-    private javax.swing.JComboBox<String> cbx_cargos_sort4;
     private javax.swing.JTable consigneeDetails_Display;
     private javax.swing.JTable consigneeDisplay;
     private javax.swing.JTable containerDisplay;
@@ -3338,10 +3594,6 @@ public void show_consignee_comm(){
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
-    private com.toedter.calendar.JDateChooser jDateChooser1;
-    private com.toedter.calendar.JDateChooser jDateChooser2;
-    private com.toedter.calendar.JDateChooser jDateChooser3;
-    private com.toedter.calendar.JDateChooser jDateChooser4;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
@@ -3349,13 +3601,10 @@ public void show_consignee_comm(){
     private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
-    private javax.swing.JLabel jLabel17;
-    private javax.swing.JLabel jLabel18;
     private javax.swing.JLabel jLabel19;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
     private javax.swing.JLabel jLabel22;
-    private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel24;
     private javax.swing.JLabel jLabel25;
     private javax.swing.JLabel jLabel26;
@@ -3365,13 +3614,10 @@ public void show_consignee_comm(){
     private javax.swing.JLabel jLabel30;
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
-    private javax.swing.JLabel jLabel33;
     private javax.swing.JLabel jLabel34;
     private javax.swing.JLabel jLabel35;
     private javax.swing.JLabel jLabel36;
     private javax.swing.JLabel jLabel37;
-    private javax.swing.JLabel jLabel38;
-    private javax.swing.JLabel jLabel39;
     private javax.swing.JLabel jLabel40;
     private javax.swing.JLabel jLabel41;
     private javax.swing.JLabel jLabel42;
@@ -3385,14 +3631,10 @@ public void show_consignee_comm(){
     private javax.swing.JLabel jLabel53;
     private javax.swing.JLabel jLabel54;
     private javax.swing.JLabel jLabel55;
-    private javax.swing.JLabel jLabel56;
-    private javax.swing.JLabel jLabel57;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel60;
     private javax.swing.JLabel jLabel61;
     private javax.swing.JLabel jLabel62;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel10;
     private javax.swing.JPanel jPanel11;
