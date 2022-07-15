@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -3647,14 +3648,31 @@ try{
 
     private void shipmentTableMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_shipmentTableMouseClicked
        int i = shipmentTable.getSelectedRow();
-   
         TableModel model = shipmentTable.getModel();
+        Date TU_date;
+        Date R_date;
+        Date EA_date;
+        Date AA_date;
+    try {
+        TU_date = new SimpleDateFormat("yyyy-MM-dd").parse((String)model.getValueAt(i,1));
+        R_date = new SimpleDateFormat("yyyy-MM-dd").parse((String)model.getValueAt(i,2));
+        EA_date = new SimpleDateFormat("yyyy-MM-dd").parse((String)model.getValueAt(i,3));
+        AA_date = new SimpleDateFormat("yyyy-MM-dd").parse((String)model.getValueAt(i,7));
+        TU_Date.setDate(TU_date);
+        R_Date.setDate(R_date);
+        EA_Date.setDate(EA_date);
+        AA_Date.setDate(AA_date);
+    } catch (ParseException ex) {
+        Logger.getLogger(staff_panel.class.getName()).log(Level.SEVERE, null, ex);
+    }
         jTextField14.setText(model.getValueAt(i,0).toString());
+        
         jTextField11.setText(model.getValueAt(i,4).toString());
         jTextField12.setText(model.getValueAt(i,5).toString());
         jTextField13.setText(model.getValueAt(i,6).toString());
         jTextField10.setText(model.getValueAt(i,8).toString());
         jTextField9.setText(model.getValueAt(i,9).toString());
+        
         
         
 
