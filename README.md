@@ -8,7 +8,7 @@ Shipment tracking means that dispatch operations are verified from the logistici
 ## DEVELOPERS:
 | Name  | Role |
 | ------------- | ------------- |
-| Mathew James Muyco  |   |
-| Shiela Mae Bacud  |   |
-| Jeffrei Tumbaga  |   |
-last edited: Dec 8, 2022
+| Mathew James Muyco  | Project Manager |
+| Shiela Mae Bacud  | Developer |
+| Jeffrei Tumbaga  | Developer |
+last edited: August 1, 2022
